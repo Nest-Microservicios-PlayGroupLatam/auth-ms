@@ -3,6 +3,9 @@ import { PrismaClient } from '@prisma/client';
 import { LoginUserDto, RegisterUserDto } from './dto';
 import { RpcException } from '@nestjs/microservices';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
+import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { envs } from 'src/config';
 
 @Injectable()
 export class AuthService
@@ -10,6 +13,10 @@ export class AuthService
   implements OnModuleInit, OnModuleDestroy {
 
     private readonly logger = new Logger('AuthService');
+
+    constructor(private readonly jwtService: JwtService) {
+      super();
+    }
 
   onModuleInit() {
     this.$connect();
@@ -20,9 +27,9 @@ export class AuthService
     this.$disconnect();
   }
 
-  // async signJWT(payload: JwtPayload) {
-  //   return this.jwtService.sign(payload);
-  // }
+  async signJWT(payload: JwtPayload) {
+    return this.jwtService.sign(payload);
+  }
 
   // async verifyToken(token: string) {
   //   try {
@@ -75,8 +82,8 @@ export class AuthService
 
       return {
         user: rest,
-        token: 'ABC',
-        // token: await this.signJWT(rest),
+        // token: 'ABC',
+        token: await this.signJWT(rest),
       };
     } catch (error) {
       throw new RpcException({
@@ -97,7 +104,7 @@ export class AuthService
       if (!user) {
         throw new RpcException({
           status: 400,
-          message: 'User/Password not valid',
+          message: 'User/Password not valid', 
         });
       }
 
@@ -114,8 +121,8 @@ export class AuthService
 
       return {
         user: rest,
-        token: 'ABC',
-        // token: await this.signJWT(rest),
+        // token: 'ABC',
+        token: await this.signJWT(rest),
       };
     } catch (error) {
       throw new RpcException({
