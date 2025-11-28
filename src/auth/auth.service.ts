@@ -31,26 +31,26 @@ export class AuthService
     return this.jwtService.sign(payload);
   }
 
-  // async verifyToken(token: string) {
-  //   try {
+  async verifyToken(token: string) {
+    try {
       
-  //     const { sub, iat, exp, ...user } = this.jwtService.verify(token, {
-  //       secret: envs.jwtSecret,
-  //     });
+      const { sub, iat, exp, ...user } = this.jwtService.verify(token, {
+        secret: envs.jwtSecret,
+      });
 
-  //     return {
-  //       user: user,
-  //       token: await this.signJWT(user),
-  //     }
+      return {
+        user: user,
+        token: await this.signJWT(user),
+      }
 
-  //   } catch (error) {
-  //     console.log(error);
-  //     throw new RpcException({
-  //       status: 401,
-  //       message: 'Invalid token'
-  //     })
-  //   }
-  // }
+    } catch (error) {
+      console.log(error);
+      throw new RpcException({
+        status: 401,
+        message: 'Invalid token'
+      })
+    }
+  }
 
   async registerUser(registerUserDto: RegisterUserDto) {
     const { email, name, password } = registerUserDto;
