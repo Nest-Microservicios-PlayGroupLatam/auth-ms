@@ -20,8 +20,8 @@ export class AuthController {
 
   @MessagePattern('auth.login.user')
   loginUser( @Payload() loginUserDto: LoginUserDto ) {
-    // return this.authService.loginUser( loginUserDto );
-    return loginUserDto;
+    return this.authService.loginUser( loginUserDto );
+    // return loginUserDto;
   }
 
   @MessagePattern('auth.verify.user')

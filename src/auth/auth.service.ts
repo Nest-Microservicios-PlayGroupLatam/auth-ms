@@ -1,6 +1,6 @@
 import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { RegisterUserDto } from './dto';
+import { LoginUserDto, RegisterUserDto } from './dto';
 import { RpcException } from '@nestjs/microservices';
 import * as bcrypt from 'bcrypt';
 
@@ -86,41 +86,42 @@ export class AuthService
     }
   }
 
-  // async loginUser(loginUserDto: LoginUserDto) {
-  //   const { email, password } = loginUserDto;
+  async loginUser(loginUserDto: LoginUserDto) {
+    const { email, password } = loginUserDto;
 
-  //   try {
-  //     const user = await this.user.findUnique({
-  //       where: { email },
-  //     });
+    try {
+      const user = await this.user.findUnique({
+        where: { email },
+      });
 
-  //     if (!user) {
-  //       throw new RpcException({
-  //         status: 400,
-  //         message: 'User/Password not valid',
-  //       });
-  //     }
+      if (!user) {
+        throw new RpcException({
+          status: 400,
+          message: 'User/Password not valid',
+        });
+      }
 
-  //     const isPasswordValid = bcrypt.compareSync(password, user.password);
+      const isPasswordValid = bcrypt.compareSync(password, user.password);
 
-  //     if (!isPasswordValid) {
-  //       throw new RpcException({
-  //         status: 400,
-  //         message: 'User/Password not valid',
-  //       });
-  //     }
+      if (!isPasswordValid) {
+        throw new RpcException({
+          status: 400,
+          message: 'User/Password not valid',
+        });
+      }
 
-  //     const { password: __, ...rest } = user;
+      const { password: __, ...rest } = user;
 
-  //     return {
-  //       user: rest,
-  //       token: await this.signJWT(rest),
-  //     };
-  //   } catch (error) {
-  //     throw new RpcException({
-  //       status: 400,
-  //       message: error.message,
-  //     });
-  //   }
-  // }
+      return {
+        user: rest,
+        token: 'ABC',
+        // token: await this.signJWT(rest),
+      };
+    } catch (error) {
+      throw new RpcException({
+        status: 400,
+        message: error.message,
+      });
+    }
+  }
 }
