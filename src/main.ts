@@ -23,5 +23,7 @@ async function bootstrap() {
   );
 
   await app.listen();
+
+  console.log("auth cambios - 0 sd");
 }
 bootstrap();
